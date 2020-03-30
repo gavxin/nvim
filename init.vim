@@ -1,6 +1,6 @@
 "dein Scripts-----------------------------
 if &compatible
-  set nocompatible
+  set nocompatible               " Be iMproved
 endif
 
 " Config root 
@@ -24,14 +24,20 @@ if dein#load_state(nvimrc_dir)
   " Add or remove your plugins here:
   " Shougo products
   call dein#add('Shougo/deoplete.nvim')
+  if !has('nvim')
+    call dein#add('roxma/nvim-yarp')
+    call dein#add('roxma/vim-hug-neovim-rpc')
+  endif
+
   call dein#add('Shougo/neosnippet.vim')
   call dein#add('Shougo/neosnippet-snippets')
   call dein#add('Shougo/denite.nvim')
   call dein#add('Shougo/deol.nvim')
+  " clang
   call dein#add('Shougo/deoplete-clangx')
   call dein#add('Shougo/neoinclude.vim')
 
-  " solarized color
+  " color theme
   call dein#add('altercation/vim-colors-solarized')
   
   " NERDTree
@@ -186,7 +192,6 @@ nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 " deoplete
 " Use deoplete.
 let g:deoplete#enable_at_startup = 1
-
 " Use smartcase.
 let g:deoplete#enable_smart_case = 1
 
@@ -202,17 +207,48 @@ endfunction
 
 " Smart TAB
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ deoplete#manual_complete()
+    \ pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ deoplete#manual_complete()
 function! s:check_back_space() abort "{{{
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~ '\s'
+let col = col('.') - 1
+return !col || getline('.')[col - 1]  =~ '\s'
 endfunction"}}}
 
+" clangx
+"call deoplete#custom#var('clangx', 'clang_binary', '/home/xinchenghua/ks/build_tools/clang/bin/clang')
+" Change clang options
+"call deoplete#custom#var('clangx', 'default_c_options', '')
+"call deoplete#custom#var('clangx', 'default_cpp_options', '-std=c++14 -I/home/xinchenghua/ks/build_tools/clang/include/c++/v1')
+
 " denite
+autocmd FileType denite call s:denite_my_settings()
+function! s:denite_my_settings() abort
+  nnoremap <silent><buffer><expr> <CR>
+  \ denite#do_map('do_action')
+  nnoremap <silent><buffer><expr> d
+  \ denite#do_map('do_action', 'delete')
+  nnoremap <silent><buffer><expr> p
+  \ denite#do_map('do_action', 'preview')
+  nnoremap <silent><buffer><expr> q
+  \ denite#do_map('quit')
+  nnoremap <silent><buffer><expr> i
+  \ denite#do_map('open_filter_buffer')
+  nnoremap <silent><buffer><expr> <Space>
+  \ denite#do_map('toggle_select').'j'
+endfunction
+
+let ignore=&wildignore .
+      \ ',*.pyc,.git,.hg,.svn'
+call denite#custom#var('file/rec', 'command',
+      \ ['scantree.py', '--path', ':directory',
+      \  '--ignore', ignore])
+call denite#custom#filter('matcher/ignore_globs', 'ignore_globs',
+      \ [ '.git/', '.ropeproject/', '__pycache__/',
+      \   'venv/', 'images/', '*.min.*', 'img/', 'fonts/', '.svn/'])
 nnoremap <silent> <leader>b :<C-u>Denite buffer<cr>
-nnoremap <silent> <leader>f :<C-u>Denite file_rec<cr>
+nnoremap <silent> <leader>f :<C-u>Denite -start-filter  file/rec<cr>
+nnoremap <silent> <leader>r :<C-u>Denite -resume file/rec<cr>
 
 " deol
 nnoremap <silent> <leader>s :<C-u>Deol<cr>
@@ -246,4 +282,5 @@ let g:drawit_mode='N'
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
+"==============================================================================
 " vim:tw=78:ts=8:ft=vim:norl:noet:fen:
