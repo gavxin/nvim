@@ -11,7 +11,7 @@ My neovim config
 
   $ git clone https://github.com/gavxin/nvim ~/.config/nvim
 
-4. Run nvim
+4. Run nvim install plugins
 
-  $ nvim
+  $ nvim +:UpdateRemotePlugins +:q
 
