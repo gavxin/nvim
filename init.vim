@@ -146,7 +146,7 @@ inoremap <leader><leader> <Esc>
 
 " Fast reloading for .vimrc
 execute "map <silent> <leader>ee :e " . expand('<sfile>') . "<cr>"
-execute "autocmd! bufwritepost " . expand('<sfile>:t') . " source " . expand('<sfile>:h')
+execute "autocmd! bufwritepost " . expand('<sfile>:t') . " source " . expand('<sfile>')
 
 " Recover from accidental Ctrl-U
 inoremap <c-u> <c-g>u<c-u>
@@ -192,8 +192,9 @@ nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 " deoplete
 " Use deoplete.
 let g:deoplete#enable_at_startup = 1
-" Use smartcase.
-let g:deoplete#enable_smart_case = 1
+call deoplete#custom#option({
+      \ 'auto_complete_delay': 50,
+      \ })
 
 " <C-h>, <BS>: close popup and delete backword char.
 inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
