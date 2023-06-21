@@ -2,6 +2,8 @@ return {
   cmd = {
     "clangd",
     "--header-insertion=never",
-    "--offset-encoding=utf-8",
-  }
+  },
+  capabilities = {
+    offsetEncoding = "utf-8",
+  },
 }
